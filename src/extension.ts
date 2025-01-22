@@ -1,26 +1,76 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  let disposable = vscode.commands.registerCommand('mate-ninja-s-html-structure-maker.generateHtmlStructure', async () => {
+    // Pobierz aktualnie wybrany folder w eksploratorze
+    const selectedResource = vscode.window.activeTextEditor?.document.uri.fsPath || 
+      (vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "mate-ninja-s-html-structure-maker" is now active!');
+    if (!selectedResource) {
+      vscode.window.showErrorMessage("Nie znaleziono aktualnego folderu. Upewnij się, że masz otwarte repozytorium w VS Code.");
+      return;
+    }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('mate-ninja-s-html-structure-maker.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from mate_ninja&#39;s html structure maker!');
-	});
+    // Sprawdź, czy to folder
+    const stats = fs.statSync(selectedResource);
+    const baseFolder = stats.isDirectory() ? selectedResource : path.dirname(selectedResource);
 
-	context.subscriptions.push(disposable);
+    // Zapytaj użytkownika, czy stworzyć nowy folder
+    const createSubFolder = await vscode.window.showQuickPick(["Tak", "Nie"], {
+      placeHolder: "Czy chcesz stworzyć osobny folder?",
+    });
+
+    let finalFolder = baseFolder;
+
+    if (createSubFolder === "Tak") {
+      const newFolderName = await vscode.window.showInputBox({
+        prompt: "Podaj nazwę nowego folderu",
+        placeHolder: "NowyFolder",
+      });
+
+      if (!newFolderName) {
+        vscode.window.showErrorMessage("Nie podano nazwy folderu.");
+        return;
+      }
+
+      finalFolder = path.join(baseFolder, newFolderName);
+
+      // Stwórz nowy folder
+      if (!fs.existsSync(finalFolder)) {
+        fs.mkdirSync(finalFolder);
+      }
+    }
+
+    // Ścieżki do plików
+    const htmlPath = path.join(finalFolder, "index.html");
+    const cssPath = path.join(finalFolder, "style.css");
+    const jsPath = path.join(finalFolder, "script.js");
+
+    // Treści plików
+    const htmlContent = `<!DOCTYPE html>
+<html lang="PL-pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  <script src="script.js"></script>
+</body>
+</html>`;
+
+    // Tworzenie plików
+    fs.writeFileSync(htmlPath, htmlContent);
+    fs.writeFileSync(cssPath, "");
+    fs.writeFileSync(jsPath, "");
+
+    vscode.window.showInformationMessage("Struktura wygenerowana!");
+  });
+
+  context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

@@ -4,7 +4,7 @@
   "description": "A tool to make a quick html structure with external css and js files",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.96.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "mate-ninja-s-html-structure-maker.helloWorld",
-        "title": "Hello World"
+        "command": "mate-ninja-s-html-structure-maker.generateHtmlStructure",
+        "title": "Wygeneruj strukturę HTML"
       }
     ]
   },
