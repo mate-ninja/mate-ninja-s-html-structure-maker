@@ -3,45 +3,58 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('mate-ninja-s-html-structure-maker.generateHtmlStructure', async () => {
-    // Pobierz aktualnie wybrany folder w eksploratorze
-    const selectedResource = vscode.window.activeTextEditor?.document.uri.fsPath || 
-      (vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null);
+  let disposable = vscode.commands.registerCommand('mate-ninja-s-html-structure-maker.generateHtmlStructure', async (uri: vscode.Uri) => {
+    let targetFolder: string | undefined;
 
-    if (!selectedResource) {
-      vscode.window.showErrorMessage("Nie znaleziono aktualnego folderu. Upewnij się, że masz otwarte repozytorium w VS Code.");
+    // Jeśli URI jest podane (kliknięcie w eksploratorze), użyj go
+    if (uri && fs.statSync(uri.fsPath).isDirectory()) {
+      targetFolder = uri.fsPath;
+    } else {
+      // Jeśli komenda jest wywołana z konsoli, zapytaj użytkownika o folder
+      const folderPick = await vscode.window.showWorkspaceFolderPick();
+      if (folderPick) {
+        targetFolder = folderPick.uri.fsPath;
+      }
+    }
+
+    if (!targetFolder) {
+      vscode.window.showErrorMessage("Folder wasn't chosen. Please right click on a folder or choose one from a list.");
       return;
     }
 
-    // Sprawdź, czy to folder
-    const stats = fs.statSync(selectedResource);
-    const baseFolder = stats.isDirectory() ? selectedResource : path.dirname(selectedResource);
-
-    // Zapytaj użytkownika, czy stworzyć nowy folder
-    const createSubFolder = await vscode.window.showQuickPick(["Tak", "Nie"], {
-      placeHolder: "Czy chcesz stworzyć osobny folder?",
+    // Zapytaj użytkownika, czy stworzyć nowy podfolder
+    const createSubFolder = await vscode.window.showQuickPick(["Yes", "No"], {
+      placeHolder: "Do you want to create a subfolder or generate in the selected folder?",
     });
 
-    let finalFolder = baseFolder;
+    if (!createSubFolder) {
+      vscode.window.showErrorMessage("Operation canceled");
+      return;
+    }
 
-    if (createSubFolder === "Tak") {
+    let finalFolder = targetFolder;
+
+    if (createSubFolder === "Yes") {
       const newFolderName = await vscode.window.showInputBox({
-        prompt: "Podaj nazwę nowego folderu",
-        placeHolder: "NowyFolder",
+        prompt: "Choose a name for the folder",
+        placeHolder: "New Folder",
       });
 
       if (!newFolderName) {
-        vscode.window.showErrorMessage("Nie podano nazwy folderu.");
+        vscode.window.showErrorMessage("Folder name not specified");
         return;
       }
 
-      finalFolder = path.join(baseFolder, newFolderName);
+      finalFolder = path.join(targetFolder, newFolderName);
 
       // Stwórz nowy folder
       if (!fs.existsSync(finalFolder)) {
         fs.mkdirSync(finalFolder);
       }
     }
+
+    const config = vscode.workspace.getConfiguration("generateStructure");
+    const htmlLang = config.get<string>("htmlLang") || "en";
 
     // Ścieżki do plików
     const htmlPath = path.join(finalFolder, "index.html");
@@ -50,15 +63,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Treści plików
     const htmlContent = `<!DOCTYPE html>
-<html lang="PL-pl">
+<html lang="${htmlLang}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
 </head>
 <body>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>`;
 
@@ -67,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
     fs.writeFileSync(cssPath, "");
     fs.writeFileSync(jsPath, "");
 
-    vscode.window.showInformationMessage("Struktura wygenerowana!");
+    vscode.window.showInformationMessage("Structure generated with no errors!");
   });
 
   context.subscriptions.push(disposable);
