@@ -3,7 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('mate-ninja-s-html-structure-maker.generateHtmlStructure', async (uri: vscode.Uri) => {
+
+//TODO:
+
+  let disposable = vscode.commands.registerCommand('mate-ninja-s-tweaks.generateHtmlStructure', async (uri: vscode.Uri) => {
     let targetFolder: string | undefined;
 
     // Jeśli URI jest podane (kliknięcie w eksploratorze), użyj go
@@ -53,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }
 
-    const config = vscode.workspace.getConfiguration("generateStructure");
+    const config = vscode.workspace.getConfiguration("mateninjasTweaks");
     const htmlLang = config.get<string>("htmlLang") || "en";
 
     // Ścieżki do plików
@@ -83,7 +86,32 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage("Structure generated with no errors!");
   });
 
+  //TODO:
+
+  const openPastebinCommand = vscode.commands.registerCommand('mate-ninja-s-tweaks.openPastebin', async () => {
+    // Zapytaj użytkownika o końcówkę linku
+    const pastebinKey = await vscode.window.showInputBox({
+      prompt: "Input the end of the pastebin code",
+      placeHolder: "XXXXXXXX",
+    });
+
+    if (!pastebinKey) {
+      vscode.window.showErrorMessage("Canceled");
+      return;
+    }
+
+    // Zbudowanie pełnego linku
+    const pastebinUrl = `https://pastebin.com/${pastebinKey}`;
+
+    // Otwórz link w przeglądarce
+    vscode.env.openExternal(vscode.Uri.parse(pastebinUrl));
+
+    vscode.window.showInformationMessage(`Opened Pastebin link: ${pastebinUrl}`);
+  });
+
   context.subscriptions.push(disposable);
+  context.subscriptions.push(openPastebinCommand);
+
 }
 
 export function deactivate() {}

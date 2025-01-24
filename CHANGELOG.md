@@ -1,10 +1,21 @@
 # Change Log
 
-## [Unreleased]
+# After Update [0.2.0]: mate_ninja's tweaks
 
-### To Add
+## [0.2.0]
+Massive update!
 
- - Setting for extension language choice
+### Changed
+
+ - Baisicaly the whole extension! Now it'll have more than just the structure generator
+ - Be ready for more content in future updates!
+
+### Added
+
+ - Option to open pastebin links with `ctrl+alt+p` while in a text document
+ - Also if you have a pastebin **API**, you can use the command `openPastebinWithAPI` to see the content **directly** in VS code
+
+# Before Update [0.2.0]: HTML Structure maker
 
 ## [0.1.1]
 
