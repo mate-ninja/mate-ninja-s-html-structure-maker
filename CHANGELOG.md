@@ -13,7 +13,6 @@ Massive update!
 ### Added
 
  - Option to open pastebin links with `ctrl+alt+p` while in a text document
- - Also if you have a pastebin **API**, you can use the command `openPastebinWithAPI` to see the content **directly** in VS code
 
 # Before Update [0.2.0]: HTML Structure maker
 

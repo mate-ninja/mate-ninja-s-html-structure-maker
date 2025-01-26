@@ -1,8 +1,8 @@
 {
-  "name": "mate-ninja-s-tweaks",
+  "name": "mate-ninja-s-html-structure-maker",
   "displayName": "mate_ninja's tweaks",
   "description": "An extension that adds a few useful commands to VS Code while in school",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "icon": "assets/icon/icon.png",
   "publisher": "mateninja",
   "engines": {
@@ -26,7 +26,15 @@
       {
         "command": "mate-ninja-s-tweaks.openPastebin",
         "title": "Open Pastebin Link"
-      } 
+      },
+      {
+        "command": "mate-ninja-s-tweaks.sendToServer",
+        "title": "Send message"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.fetchMessages",
+        "title": "Get messages"
+      }
     ],
     "menus": {
       "explorer/context": [
@@ -56,6 +64,11 @@
             "PL-pl"
           ],
           "description": "Lang property in generated html file"
+        },
+        "mateninjasTweaks.serverPassword": {
+          "type": "string",
+          "default": "",
+          "description": "Password"
         }
       }
     }
@@ -66,20 +79,27 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "dev": "nodemon ."
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.80.0",
+    "@types/websocket": "^1.0.10",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.16.0",
+    "nodemon": "^3.1.9",
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "axios": "^1.7.9",
+    "node-fetch": "^3.3.2",
+    "socket.io": "^4.8.1",
+    "websocket": "^1.0.35",
+    "ws": "^8.18.0"
   }
 }
