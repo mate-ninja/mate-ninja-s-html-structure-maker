@@ -2,6 +2,12 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.1]
+
+### Fixed
+
+ - A singular typo. ***Just one is enough*** 
+
 ## [0.2.0]
 Massive update!
 
