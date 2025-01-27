@@ -125,16 +125,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     const config = vscode.workspace.getConfiguration("mateninjasTweaks");
     const password = config.get<string>("serverPassword");
+    const username = config.get<string>("serverUsername");
 
     if (!password) {
-        vscode.window.showErrorMessage('Password is not set in settings.');
+        vscode.window.showErrorMessage("Password was not set");
         return;
     }
 
     try {
-        const response = await axios.post('https://smoggy-legend-flier.glitch.me/send-message', { 
+        const response = await axios.post('https://vs-code-message-feed.glitch.me/send-message', { 
             message,
-            password 
+            password,
+            username
         });
 
         if (response.status === 200) {
@@ -160,7 +162,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         // Pobierz wiadomości z serwera z nagłówkiem autoryzacji
-        const response = await axios.get('https://smoggy-legend-flier.glitch.me/messages', {
+        const response = await axios.get('https://vs-code-message-feed.glitch.me/messages', {
             headers: {
                 'x-api-key': serverPassword
             }
@@ -174,8 +176,10 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // Przygotuj treść wiadomości (bez daty, każda w nowej linii)
-            const formattedMessages = messages.map((msg: { text: string }) => msg.text).join('\n');
+            // Przygotuj treść wiadomości
+            const formattedMessages = messages.map((msg: { text: string, sender: string }) => {
+              return `${msg.sender}: ${msg.text}`
+            }).join('\n');
 
             // Otwórz nowy dokument w edytorze VS Code
             const document = await vscode.workspace.openTextDocument({
@@ -197,11 +201,52 @@ export function activate(context: vscode.ExtensionContext) {
         console.error('Error details:', error);
     }
 });
+//TODO:
+const openInGoogle = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogle', async () => {
+  const keyValue = await vscode.window.showInputBox({
+    prompt: "Input what you want to search for",
+    placeHolder: "Hank Brawl Stars",
+  });
+
+  if (!keyValue) {
+    vscode.window.showErrorMessage("Canceled");
+    return;
+  }
+
+  // Zbudowanie pełnego linku
+  const url = `https://google.com/search?q=${encodeURIComponent(keyValue)}`;
+
+  // Otwórz link w przeglądarce
+  vscode.env.openExternal(vscode.Uri.parse(url));
+
+  vscode.window.showInformationMessage(`Opened Google link: ${url}`);
+});
+
+const openInGoogleImages = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogleImages', async () => {
+  const keyValue = await vscode.window.showInputBox({
+    prompt: "Input what you want to search for",
+    placeHolder: "Hank Brawl Stars",
+  });
+
+  if (!keyValue) {
+    vscode.window.showErrorMessage("Canceled");
+    return;
+  }
+
+  // Zbudowanie pełnego linku
+  const url = `https://google.com/images?q=${encodeURIComponent(keyValue)}`;
+
+  // Otwórz link w przeglądarce
+  vscode.env.openExternal(vscode.Uri.parse(url));
+
+  vscode.window.showInformationMessage(`Opened Google Images link: ${url}`);
+});
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(openPastebinCommand);
   context.subscriptions.push(sendToServerCommand);
   context.subscriptions.push(fetchMessagesCommand);
+  context.subscriptions.push(openInGoogle);
 }
 
 export function deactivate() {}

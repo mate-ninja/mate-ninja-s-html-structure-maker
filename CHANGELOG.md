@@ -2,6 +2,13 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.2] 
+
+### Added
+
+ - An option to search in google for a thing using `Tweaks search: Search in Google`
+ - Alternatively for images of the thing using `Tweaks search: Search in Google Images`
+
 ## [0.2.1]
 
 ### Fixed

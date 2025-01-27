@@ -14,6 +14,12 @@ You can just write the command `Open Pastebin link` in console and put the end c
 
 Alternatively you can press `ctrl+alt+p` in a file to achieve the same result
 
+## Quick google search
+
+You can search through web quickly when using `Tweaks search: Search in Google`
+
+You can also find images using `Tweaks search: Search in Google Images`
+
 # Settings
 
 `mateninjasTweaks.htmlLang` - lets you decide if you are from Poland or not
