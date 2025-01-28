@@ -516,6 +516,46 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    //TODO:
+
+    let replaceVars = vscode.commands.registerCommand('mate-ninja-s-tweaks.renameVariables', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const document = editor.document;
+            const text = document.getText();
+
+            // Regular expression to match variable names
+            const variableRegex = /(\blet\b|\bconst\b|\bvar\b)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
+
+            let match;
+            let counter = 1;
+            let newText = text;
+            const variableMap = new Map<string, string>();
+
+            // Find all variable declarations and map them to new names
+            while ((match = variableRegex.exec(text)) !== null) {
+                const originalName = match[2];
+                if (!variableMap.has(originalName)) {
+                    variableMap.set(originalName, `hankBrawlStars${counter++}`);
+                }
+            }
+
+            // Replace all occurrences of the variables
+            variableMap.forEach((newName, originalName) => {
+                const regex = new RegExp(`\\b${originalName}\\b`, 'g');
+                newText = newText.replace(regex, newName);
+            });
+
+            // Replace the entire document with the new text
+            editor.edit(editBuilder => {
+                const firstLine = document.lineAt(0);
+                const lastLine = document.lineAt(document.lineCount - 1);
+                const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
+                editBuilder.replace(textRange, newText);
+            });
+        }
+    });
+
     context.subscriptions.push(generateHTML);
     context.subscriptions.push(generatePHP);
     context.subscriptions.push(openPastebinCommand);
@@ -525,6 +565,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(openInGoogle);
     context.subscriptions.push(openInGoogleImages);
     context.subscriptions.push(spacesToTabs);
+    context.subscriptions.push(replaceVars);
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")

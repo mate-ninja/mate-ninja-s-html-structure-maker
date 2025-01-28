@@ -25,8 +25,15 @@ You can also find images using `Tweaks search: Search in Google Images`
 
 Work in progress...
 Though avaliable for testing for me and my buddy
+
 The messages are currently being kept for 2 minutes, and then they are deleted
+
 You can see it [here](https://vs-code-message-feed.glitch.me), who knows, maybe you'll just find us
+
+
+## Fun option
+
+You have a little command to rename all of the variables in a .js file to an iconic brawler from the amazing game called brawl stars
 
 # Settings
 

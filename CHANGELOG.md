@@ -2,6 +2,12 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.5]
+
+### Added
+
+ - A fun little option to cause chaos in .js files
+
 ## [0.2.4]
 
 ### Added 
