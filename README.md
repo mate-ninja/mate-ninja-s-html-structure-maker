@@ -31,4 +31,5 @@ You can see it [here](https://vs-code-message-feed.glitch.me), who knows, maybe 
 # Settings
 
 `mateninjasTweaks.htmlLang` - lets you decide if you are from Poland or not
+
 `mateninjasTweaks.sharkBased` - decide if you want your styles and script to be embeded in html/php file
