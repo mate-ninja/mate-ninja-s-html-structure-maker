@@ -29,11 +29,15 @@
       },
       {
         "command": "mate-ninja-s-tweaks.sendToServer",
-        "title": "Tweaks: Send message"
+        "title": "Server tweaks: Send message"
       },
       {
         "command": "mate-ninja-s-tweaks.fetchMessages",
-        "title": "Tweaks: Get messages"
+        "title": "Server tweaks: Get messages"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.listenForMessages",
+        "title": "Server tweaks: listen for messages"
       },
       {
         "command": "mate-ninja-s-tweaks.openInGoogle",
@@ -96,6 +100,7 @@
     "dev": "nodemon ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.19.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.80.0",
@@ -104,15 +109,14 @@
     "@typescript-eslint/parser": "^8.17.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
-    "eslint": "^9.16.0",
+    "globals": "^15.14.0",
     "nodemon": "^3.1.9",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.22.0"
   },
   "dependencies": {
     "axios": "^1.7.9",
     "node-fetch": "^3.3.2",
-    "socket.io": "^4.8.1",
-    "websocket": "^1.0.35",
-    "ws": "^8.18.0"
+    "socket.io": "^4.8.1"
   }
 }

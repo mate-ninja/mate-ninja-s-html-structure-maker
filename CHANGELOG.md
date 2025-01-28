@@ -2,6 +2,12 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.3]
+
+### Added 
+
+ - Some server action to fight boredom with my friend
+
 ## [0.2.2] 
 
 ### Added

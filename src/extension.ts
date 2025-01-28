@@ -5,7 +5,7 @@ import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
 
-//TODO:
+  //TODO:
 
   let disposable = vscode.commands.registerCommand('mate-ninja-s-tweaks.generateHtmlStructure', async (uri: vscode.Uri) => {
     let targetFolder: string | undefined;
@@ -114,13 +114,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   const sendToServerCommand = vscode.commands.registerCommand('mate-ninja-s-tweaks.sendToServer', async () => {
     const message = await vscode.window.showInputBox({
-        prompt: 'Enter the message to send to the server',
-        placeHolder: 'Type your message here...',
+      prompt: 'Enter the message to send to the server',
+      placeHolder: 'Type your message here...',
     });
 
     if (!message) {
-        vscode.window.showErrorMessage('Message is empty. Try again.');
-        return;
+      vscode.window.showErrorMessage('Message is empty. Try again.');
+      return;
     }
 
     const config = vscode.workspace.getConfiguration("mateninjasTweaks");
@@ -128,126 +128,211 @@ export function activate(context: vscode.ExtensionContext) {
     const username = config.get<string>("serverUsername");
 
     if (!password) {
-        vscode.window.showErrorMessage("Password was not set");
-        return;
+      vscode.window.showErrorMessage("Password was not set");
+      return;
     }
 
     try {
-        const response = await axios.post('https://vs-code-message-feed.glitch.me/send-message', { 
-            message,
-            password,
-            username
-        });
+      const response = await axios.post('https://vs-code-message-feed.glitch.me/send-message', {
+        message,
+        password,
+        username
+      });
 
-        if (response.status === 200) {
-            vscode.window.showInformationMessage('Message sent successfully!');
-        }
+      if (response.status === 200) {
+        vscode.window.showInformationMessage('Message sent successfully!');
+      }
     } catch (error: any) {
-        vscode.window.showErrorMessage('Failed to send message. Check the server.');
-        console.error(error);
+      vscode.window.showErrorMessage('Failed to send message. Check the server.');
+      console.error(error);
     }
   });
+
+  //FIXME:
+
+  async function fetchMessage(serverPassword: string, listen : boolean) {
+    try {
+
+      if (!serverPassword || serverPassword.trim() === '') {
+        vscode.window.showErrorMessage('Server password not configured.');
+        return;
+      }
+
+      // Pobierz wiadomości z serwera z nagłówkiem autoryzacji
+      const response = await axios.get('https://vs-code-message-feed.glitch.me/messages', {
+        headers: {
+          'x-api-key': serverPassword
+        }
+      });
+
+      if (response.status === 200) {
+        const messages = response.data;
+        if (!messages || messages.length === 0) {
+          if (!listen) {
+            vscode.window.showInformationMessage('No messages found on the server.');
+          } else {
+            console.log('No messages found on the server.');
+          }
+          return;
+        }
+        if (!listen) {
+          // Przygotuj treść wiadomości
+          const formattedMessages = messages.map((msg: { text: string, sender: string }) => {
+            return `${msg.sender}: ${msg.text}`
+          }).join('\n');
+
+          // Otwórz nowy dokument w edytorze VS Code
+          const document = await vscode.workspace.openTextDocument({
+            content: formattedMessages,
+            language: 'plaintext' // Możesz zmienić język na 'markdown' lub inny, jeśli chcesz
+          });
+
+          // Pokaż dokument w edytorze
+          await vscode.window.showTextDocument(document);
+        } else {
+          vscode.window.showInformationMessage("You've got mail!")
+        }
+      } else {
+        vscode.window.showErrorMessage('Failed to fetch messages from the server.');
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        vscode.window.showErrorMessage('Unauthorized: Invalid password.');
+      } else {
+        vscode.window.showErrorMessage(`Error fetching messages: ${error.message}`);
+      }
+      console.error('Error details:', error);
+    }
+  }
 
   //TODO:
 
   const fetchMessagesCommand = vscode.commands.registerCommand('mate-ninja-s-tweaks.fetchMessages', async () => {
+    const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+    const serverPassword = config.get<string>("serverPassword") || "";
+    await fetchMessage(serverPassword, false);
+  });
+
+  //FIXME:
+
+  async function authenticate(serverPassword: string) {
     try {
-        // Pobierz hasło z konfiguracji VS Code
-        const config = vscode.workspace.getConfiguration("mateninjasTweaks");
-        const serverPassword = config.get<string>("serverPassword");
 
-        if (!serverPassword || serverPassword.trim() === '') {
-            vscode.window.showErrorMessage('Server password not configured.');
-            return;
+      if (!serverPassword || serverPassword.trim() === '') {
+        vscode.window.showErrorMessage('Server password not configured.');
+        return;
+      }
+
+      // Pobierz wiadomości z serwera z nagłówkiem autoryzacji
+      const response = await axios.get('https://vs-code-message-feed.glitch.me/authenticate', {
+        headers: {
+          'x-api-key': serverPassword
         }
+      });
 
-        // Pobierz wiadomości z serwera z nagłówkiem autoryzacji
-        const response = await axios.get('https://vs-code-message-feed.glitch.me/messages', {
-            headers: {
-                'x-api-key': serverPassword
-            }
-        });
-
-        if (response.status === 200) {
-            const messages = response.data;
-
-            if (!messages || messages.length === 0) {
-                vscode.window.showInformationMessage('No messages found on the server.');
-                return;
-            }
-
-            // Przygotuj treść wiadomości
-            const formattedMessages = messages.map((msg: { text: string, sender: string }) => {
-              return `${msg.sender}: ${msg.text}`
-            }).join('\n');
-
-            // Otwórz nowy dokument w edytorze VS Code
-            const document = await vscode.workspace.openTextDocument({
-                content: formattedMessages,
-                language: 'plaintext' // Możesz zmienić język na 'markdown' lub inny, jeśli chcesz
-            });
-
-            // Pokaż dokument w edytorze
-            await vscode.window.showTextDocument(document);
-        } else {
-            vscode.window.showErrorMessage('Failed to fetch messages from the server.');
-        }
+      if (response.status === 200) {
+        return true;
+      } else {
+        vscode.window.showErrorMessage('Error while authenticating');
+      }
+      return false;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-            vscode.window.showErrorMessage('Unauthorized: Invalid password.');
-        } else {
-            vscode.window.showErrorMessage(`Error fetching messages: ${error.message}`);
-        }
-        console.error('Error details:', error);
+      if (error.response && error.response.status === 401) {
+        vscode.window.showErrorMessage('Failed to authenticate');
+      } else {
+        vscode.window.showErrorMessage(`Error while authenticating`);
+      }
+      console.error('Error details:', error);
+      return false;
     }
-});
-//TODO:
-const openInGoogle = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogle', async () => {
-  const keyValue = await vscode.window.showInputBox({
-    prompt: "Input what you want to search for",
-    placeHolder: "Hank Brawl Stars",
-  });
-
-  if (!keyValue) {
-    vscode.window.showErrorMessage("Canceled");
-    return;
   }
 
-  // Zbudowanie pełnego linku
-  const url = `https://google.com/search?q=${encodeURIComponent(keyValue)}`;
+  //FIXME:
 
-  // Otwórz link w przeglądarce
-  vscode.env.openExternal(vscode.Uri.parse(url));
-
-  vscode.window.showInformationMessage(`Opened Google link: ${url}`);
-});
-
-const openInGoogleImages = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogleImages', async () => {
-  const keyValue = await vscode.window.showInputBox({
-    prompt: "Input what you want to search for",
-    placeHolder: "Hank Brawl Stars",
-  });
-
-  if (!keyValue) {
-    vscode.window.showErrorMessage("Canceled");
-    return;
+  async function listenOnServer() {
+    const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+    const pass = config.get<string>("serverPassword") || "";
+    const authSucces = await authenticate(pass);
+    console.log(authSucces);
+    if (authSucces) {
+      let message = "";
+      const response = await axios.get('https://vs-code-message-feed.glitch.me/messages', {
+        headers: {
+          'x-api-key': pass
+        }
+      });
+      if (response.status == 200 && response.data.length != 0 && response.data) {
+        console.log('Fetching!')
+        await fetchMessage(pass, true);
+        return;
+      } else {
+        setTimeout(listenOnServer, 60000);
+        console.log('Aligned another listening')
+      }
+    } else {
+      return;
+    }
   }
 
-  // Zbudowanie pełnego linku
-  const url = `https://google.com/images?q=${encodeURIComponent(keyValue)}`;
+  //TODO:
 
-  // Otwórz link w przeglądarce
-  vscode.env.openExternal(vscode.Uri.parse(url));
+  const listenForMessages = vscode.commands.registerCommand('mate-ninja-s-tweaks.listenForMessages', async () => {
+    console.log('Listening...')
+    vscode.window.showInformationMessage("Listening for messages...");
+    await listenOnServer();
+    return;
+  });
 
-  vscode.window.showInformationMessage(`Opened Google Images link: ${url}`);
-});
+  //TODO:
+  const openInGoogle = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogle', async () => {
+    const keyValue = await vscode.window.showInputBox({
+      prompt: "Input what you want to search for",
+      placeHolder: "Hank Brawl Stars",
+    });
+
+    if (!keyValue) {
+      vscode.window.showErrorMessage("Canceled");
+      return;
+    }
+
+    // Zbudowanie pełnego linku
+    const url = `https://google.com/search?q=${encodeURIComponent(keyValue)}`;
+
+    // Otwórz link w przeglądarce
+    vscode.env.openExternal(vscode.Uri.parse(url));
+
+    vscode.window.showInformationMessage(`Opened Google link: ${url}`);
+  });
+
+  const openInGoogleImages = vscode.commands.registerCommand('mate-ninja-s-tweaks.openInGoogleImages', async () => {
+    const keyValue = await vscode.window.showInputBox({
+      prompt: "Input what you want to search for",
+      placeHolder: "Hank Brawl Stars",
+    });
+
+    if (!keyValue) {
+      vscode.window.showErrorMessage("Canceled");
+      return;
+    }
+
+    // Zbudowanie pełnego linku
+    const url = `https://google.com/images?q=${encodeURIComponent(keyValue)}`;
+
+    // Otwórz link w przeglądarce
+    vscode.env.openExternal(vscode.Uri.parse(url));
+
+    vscode.window.showInformationMessage(`Opened Google Images link: ${url}`);
+  });
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(openPastebinCommand);
   context.subscriptions.push(sendToServerCommand);
   context.subscriptions.push(fetchMessagesCommand);
+  context.subscriptions.push(listenForMessages);
   context.subscriptions.push(openInGoogle);
+  context.subscriptions.push(openInGoogleImages);
+
 }
 
-export function deactivate() {}
+export function deactivate() { }
 
