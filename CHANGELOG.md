@@ -2,6 +2,25 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.4]
+
+### Added 
+
+ - PHP structure generation!
+ - 2 spaces to 1 tab conversion
+ - Shark based structure generation
+
+### Changed
+
+ - Now there is more key bindings:
+   - `ctrl+alt+t` for 2 spaces to 1 tab conversion
+   - `ctrl+alt+l` for listening to server for messages
+   - `ctrl+alt+k` and then `ctrl+s` for sending a message to server
+   - `ctrl+alt+k` and then `ctrl+g` for getting messages from server
+
+ - This is mostly for me and my freind, but you can now put a temporary password when sending something, to not fear of our password leaking out to someone (like it even mattered)
+
+
 ## [0.2.3]
 
 ### Added 

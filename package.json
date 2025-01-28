@@ -2,7 +2,7 @@
   "name": "mate-ninja-s-html-structure-maker",
   "displayName": "mate_ninja's tweaks",
   "description": "An extension that adds a few useful commands to VS Code while in school",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "icon": "assets/icon/icon.png",
   "publisher": "mateninja",
   "engines": {
@@ -15,13 +15,23 @@
     "type": "git",
     "url": "https://github.com/mate-ninja/mate-ninja-s-html-structure-maker.git"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "mate-ninja-s-tweaks.generateHtmlStructure",
-        "title": "Tweaks: Generate an HTML file structure"
+        "title": "Tweaks: Generate a HTML file structure"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.generatePHPStructure",
+        "title": "Tweaks: Generate a PHP file structure"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.convertSpacesToTabs",
+        "title": "Tweaks: turn 2 spaces into 1 tab"
       },
       {
         "command": "mate-ninja-s-tweaks.openPastebin",
@@ -54,6 +64,11 @@
           "command": "mate-ninja-s-tweaks.generateHtmlStructure",
           "when": "explorerResourceIsFolder",
           "group": "navigation"
+        },
+        {
+          "command": "mate-ninja-s-tweaks.generatePHPStructure",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
         }
       ]
     },
@@ -62,6 +77,26 @@
         "command": "mate-ninja-s-tweaks.openPastebin",
         "key": "ctrl+alt+p",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.convertSpacesToTabs",
+        "key": "ctrl+alt+t",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.sendToServer",
+        "key": "ctrl+alt+k ctrl+s",
+        "when": "editorFocus"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.fetchMessages",
+        "key": "ctrl+alt+k ctrl+g",
+        "when": "editorFocus"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.listenForMessages",
+        "key": "ctrl+alt+l",
+        "when": "editorFocus"
       }
     ],
     "configuration": {
@@ -80,12 +115,23 @@
         "mateninjasTweaks.serverPassword": {
           "type": "string",
           "default": "",
-          "description": "Password for the server"
+          "description": "Password for the server",
+          "password": true
         },
         "mateninjasTweaks.serverUsername": {
           "type": "string",
           "default": "Anon",
           "description": "Username for the server"
+        },
+        "mateninjasTweaks.listenOnStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Decides, if you want to check messages as soon as you open VScode"
+        },
+        "mateninjasTweaks.sharkBased": {
+          "type": "boolean",
+          "default": false,
+          "description": "Turning this setting on will make generated structures shark-based (the style and script will be embeded in html/php file)"
         }
       }
     }
