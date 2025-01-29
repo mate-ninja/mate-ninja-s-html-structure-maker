@@ -2,6 +2,22 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.7]
+
+### Added
+
+ - Added shark's special 🤢
+ -  >FOR YOUR OWN SAFETY, PLEASE DO NOT UNDER ANY INFLUENCE USE THIS COMMAND WHEN SOMEONE IS WATCHING YOUR COMPUTER, YOU WILL DEFENITELY PERISH, DIE OR EVEN WORSE
+ - ***Don't say I didn't warn you***
+
+## [0.2.6]
+
+### Fixed
+
+*Not a valuable information for standard users*
+
+ - A bug in a server request
+
 ## [0.2.5]
 
 ### Added

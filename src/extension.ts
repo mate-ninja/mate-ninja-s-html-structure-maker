@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import axios from 'axios';
 import * as path from 'path';
+import * as https from 'https';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -523,6 +524,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor) {
             const document = editor.document;
             const text = document.getText();
+            const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+            let sharkMode = config.get<boolean>("sharkBased");
 
             // Regular expression to match variable names
             const variableRegex = /(\blet\b|\bconst\b|\bvar\b)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
@@ -536,7 +539,11 @@ export function activate(context: vscode.ExtensionContext) {
             while ((match = variableRegex.exec(text)) !== null) {
                 const originalName = match[2];
                 if (!variableMap.has(originalName)) {
-                    variableMap.set(originalName, `hankBrawlStars${counter++}`);
+                    if (sharkMode) {
+                        variableMap.set(originalName, `Melodie${counter++}`);
+                    } else {
+                        variableMap.set(originalName, `hankBrawlStars${counter++}`);
+                    }
                 }
             }
 
@@ -556,6 +563,119 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    //FIXME:
+
+    function downloadImage(url: string, filePath: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const file = fs.createWriteStream(filePath);
+            https.get(url, (response) => {
+                response.pipe(file);
+                file.on('finish', () => {
+                    file.close();
+                    resolve();
+                });
+            }).on('error', (err) => {
+                fs.unlink(filePath, () => {}); // Usuń plik w przypadku błędu
+                reject(err);
+            });
+        });
+    }
+
+    //FIXME:
+
+    function findFoldersRecursively(folderPath: string, allFolders: string[]) {
+        allFolders.push(folderPath); // Dodaj bieżący folder do listy
+    
+        // Przejdź przez wszystkie podfoldery
+        const items = fs.readdirSync(folderPath, { withFileTypes: true });
+        for (const item of items) {
+            if (item.isDirectory()) {
+                const subFolderPath = path.join(folderPath, item.name);
+                findFoldersRecursively(subFolderPath, allFolders);
+            }
+        }
+    }
+
+    //FIXME:
+
+    function getRandomFolderPath(basePath: string): string {
+        // Znajdź wszystkie foldery w strukturze
+        const allFolders: string[] = [];
+        findFoldersRecursively(basePath, allFolders);
+    
+        // Wybierz losowy folder
+        return allFolders[Math.floor(Math.random() * allFolders.length)];
+    }
+
+    //FIXME:
+
+    async function createRandomFoldersInStructure(basePath: string, imageUrls: string[]) {
+        const folderNames = ['music', 'sounds', 'moans', 'audio', 'playbacks', 'melodies', 'songs', 'brawlers', 'projekt', 'htdocs', 'melodie was here', 'sus', 'notSus', 'melodieFanarts', 'topSecret', 'do NOT open', 'XOXO', 'Xmas gift', 'gf pics', 'scripts', 'styles', 'fetishes'];
+        const numberOfFolders = Math.floor(Math.random() * 16) + 35;
+    
+        for (let i = 0; i < numberOfFolders; i++) {
+            // Wybierz losowy folder w strukturze
+            const randomFolderPath = getRandomFolderPath(basePath);
+            const randomFolderName = folderNames[Math.floor(Math.random() * folderNames.length)];
+            const newFolderPath = path.join(randomFolderPath, randomFolderName);
+    
+            // Utwórz folder, jeśli nie istnieje
+            if (!fs.existsSync(newFolderPath)) {
+                fs.mkdirSync(newFolderPath);
+            }
+    
+            // Dodaj losową liczbę obrazów do nowego folderu
+            await addImagesToFolderRecursively(newFolderPath, imageUrls);
+        }
+    }
+
+    //FIXME:
+
+    async function addImagesToFolderRecursively(folderPath: string, imageUrls: string[]) {
+        // Losowa liczba obrazów (od 1 do 4)
+        const numberOfImages = Math.floor(Math.random() * 4) + 2;
+    
+        for (let i = 1; i <= numberOfImages; i++) {
+            // Wybierz losowy URL obrazu
+            const randomImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    
+            // Nazwa obrazu
+            const imageName = `melodie${i}.png`;
+            const imagePath = path.join(folderPath, imageName);
+    
+            // Pobierz obraz i zapisz go w folderze
+            await downloadImage(randomImageUrl, imagePath);
+        }
+    
+        // Przejdź przez wszystkie podfoldery
+        const items = fs.readdirSync(folderPath, { withFileTypes: true });
+        for (const item of items) {
+            if (item.isDirectory()) {
+                const subFolderPath = path.join(folderPath, item.name);
+                await addImagesToFolderRecursively(subFolderPath, imageUrls);
+            }
+        }
+    }
+
+    //TODO:
+    let sharkSpecial = vscode.commands.registerCommand('mate-ninja-s-tweaks.sharkSpecial', async () => {
+        const imageUrls = ["https://i.imgur.com/PGCpPj5.png", "https://i.imgur.com/cSOLXUa.png", "https://i.imgur.com/hdEglxX.png", "https://i.imgur.com/P2TQaeb.png", "https://i.etsystatic.com/54127309/r/il/d53498/6251082931/il_300x300.6251082931_4sh3.jpg", "https://i.imgur.com/MVOrCKt.png", "https://i.imgur.com/0eVbFxB.png", "https://i.pinimg.com/736x/a1/1c/1e/a11c1e447edf36b0d8019be673963c43.jpg", "https://i.pinimg.com/736x/84/ee/00/84ee00b2bf4c6d5e006456dc7edf90c7.jpg", "https://i.pinimg.com/736x/70/4e/78/704e78dcebd7bd2e1454e9b2d66f6498.jpg", "https://i.pinimg.com/736x/77/c5/fa/77c5facc89d5fc99d20be55673ffaf37.jpg", "https://i.pinimg.com/736x/77/2e/e3/772ee39f0fcd31007d9210be4209d429.jpg", "https://i.pinimg.com/736x/f5/db/3a/f5db3a5904c155e25c468f2a7e146c9b.jpg", "https://i.pinimg.com/236x/87/7a/06/877a06f9755514f02b0e95dac5df70a0.jpg", "https://i.pinimg.com/236x/b5/4f/45/b54f45837aa4113bdd12fb848872aecf.jpg", "https://i.pinimg.com/236x/7f/a4/fa/7fa4fab445bfb28022ec1b21ee0dc990.jpg"]
+
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+
+        if (workspaceFolders) {
+            for (const folder of workspaceFolders) {
+                await addImagesToFolderRecursively(folder.uri.fsPath, imageUrls);
+                await createRandomFoldersInStructure(folder.uri.fsPath, imageUrls);
+            }
+
+            vscode.window.showInformationMessage('Images and folders added successfully! Have fun deleting them >:D');
+            vscode.window.showInformationMessage(`Gotta catch them all! There are ${imageUrls.length} unique meloidies!`);
+        } else {
+            vscode.window.showErrorMessage('No workspace folder is open.');
+        }
+    });
+
     context.subscriptions.push(generateHTML);
     context.subscriptions.push(generatePHP);
     context.subscriptions.push(openPastebinCommand);
@@ -566,6 +686,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(openInGoogleImages);
     context.subscriptions.push(spacesToTabs);
     context.subscriptions.push(replaceVars);
+    context.subscriptions.push(sharkSpecial);
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")
