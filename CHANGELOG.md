@@ -2,6 +2,13 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.8]
+
+### Changed 
+
+ - Shark's Special is just chaos now
+ - Using the command now will **absolutely obliterate** the \*\*\*\* out of your storage
+
 ## [0.2.7]
 
 ### Added
