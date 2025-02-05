@@ -2,6 +2,16 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.9]
+
+### Added
+
+ - Added JSON message persistance (only indexes from 1 to 10, also only for me and my friend)
+
+### Fixed
+
+ - Some typos in changelog and app
+
 ## [0.2.8]
 
 ### Changed 

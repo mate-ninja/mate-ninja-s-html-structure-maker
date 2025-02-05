@@ -707,7 +707,7 @@ export function activate(context: vscode.ExtensionContext) {
         const userInput = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Melodie maniac mode"], {
             title: "How much melodie do you want to see?",
             placeHolder: "Pick a number or I'll force Melodie maniac mode"
-        }) || "Melodie maniac mode";
+        }) || "";
 
         let userChoice = 10
 
@@ -717,7 +717,7 @@ export function activate(context: vscode.ExtensionContext) {
                     downloadAndOpenImage()
                 }
             })
-        } else {
+        } else if (userInput == "Melodie maniac mode"){
             vscode.window.showInformationMessage('Well, it was your choice... It was nice knowing you');
             userChoice = 30
         }
@@ -729,13 +729,113 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             vscode.window.showInformationMessage('Images and folders added successfully! Have fun deleting them >:D');
-            vscode.window.showInformationMessage(`Gotta catch them all! There are ${imageUrls.length} unique meloidies!`);
+            vscode.window.showInformationMessage(`Gotta catch them all! There are ${imageUrls.length} unique melodies!`);
             vscode.window.showWarningMessage(`But good news! there are only ${melodieCount} pictures of melodie! I'm sure you can delete all of them, right?`);
             melodieCount = 0
             console.log(folderCount)
             folderCount = 0
         } else {
             vscode.window.showErrorMessage('No workspace folder is open.');
+        }
+    });
+
+    const fetchJSON = vscode.commands.registerCommand('mate-ninja-s-tweaks.fetchJSON', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+            const pass = config.get<string>("serverPassword") || "";
+            if (!pass || pass.trim() === '') {
+                vscode.window.showErrorMessage('Server password not configured.');
+                return;
+            }
+            const document = editor.document;
+            const id = await vscode.window.showInputBox({
+                prompt: "Podaj ID od 1 do 10",
+                validateInput: (input) => {
+                  const numericId = parseInt(input, 10);
+                  if (isNaN(numericId) || numericId < 1 || numericId > 10) {
+                    return "ID musi być liczbą od 1 do 10.";
+                  }
+                  return null; // Wartość jest poprawna
+                },
+                ignoreFocusOut: true
+              });
+            console.log('11')
+            try {
+                const response = await axios.get(`https://vs-code-message-feed.glitch.me/getJSON`, {
+                    headers: {
+                        'x-api-key': pass,
+                        'id': id
+                    }
+                });
+
+                console.log('1')
+                const text = response.data.text;
+                if (text) {
+                    console.log('2')
+                    editor.edit(editBuilder => {
+                        const firstLine = document.lineAt(0);
+                        const lastLine = document.lineAt(document.lineCount - 1);
+                        const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
+                        editBuilder.replace(textRange, text);
+                    });
+                    vscode.window.showInformationMessage('Text loaded successfully!');
+                } else {
+                    vscode.window.showInformationMessage('No text found for this file.');
+                }
+            } catch (error : any) {
+                vscode.window.showErrorMessage('Failed to load text: ' + error.message);
+            }
+        } else {
+            vscode.window.showErrorMessage('Editor not opened!')
+        }
+        
+    });
+
+    const saveJSON = vscode.commands.registerCommand('mate-ninja-s-tweaks.saveJSON', async () => {
+        // Zapytaj użytkownika o ID od 1 do 10
+    const id = await vscode.window.showInputBox({
+        prompt: "Podaj ID od 1 do 10",
+        validateInput: (input) => {
+          const numericId = parseInt(input, 10);
+          if (isNaN(numericId) || numericId < 1 || numericId > 10) {
+            return "ID musi być liczbą od 1 do 10.";
+          }
+          return null; // Wartość jest poprawna
+        },
+        ignoreFocusOut: true
+      });
+
+        const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+        const pass = config.get<string>("serverPassword") || "";
+        if (!pass || pass.trim() === '') {
+            vscode.window.showErrorMessage('Server password not configured.');
+            return;
+        }
+  
+      if (!id) {
+        vscode.window.showErrorMessage("Nie podano ID.");
+        return;
+      }
+  
+      const editor = vscode.window.activeTextEditor;
+      if (editor) {
+        const document = editor.document;
+        const text = document.getText();
+  
+            try {
+                const response = await axios.post('https://vs-code-message-feed.glitch.me/saveJSON', {
+                id,
+                text,
+                password: pass,
+            });
+  
+            vscode.window.showInformationMessage(response.data.message);
+            } catch (error : any) {
+                vscode.window.showErrorMessage('Failed to save text: ' + error.message);
+            }
+        } else {
+            vscode.window.showErrorMessage('Editor not opened!')
         }
     });
 
@@ -750,6 +850,8 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(spacesToTabs);
     context.subscriptions.push(replaceVars);
     context.subscriptions.push(sharkSpecial);
+    context.subscriptions.push(fetchJSON);
+    context.subscriptions.push(saveJSON);
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")
