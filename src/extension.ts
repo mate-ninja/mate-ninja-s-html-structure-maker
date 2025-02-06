@@ -839,6 +839,24 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    const wakeUp = vscode.commands.registerCommand('mate-ninja-s-tweaks.wakey', async () => {
+            const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+            const pass = config.get<string>("serverPassword") || "";
+            if (!pass || pass.trim() === '') {
+                vscode.window.showErrorMessage('Server password not configured.');
+                return;
+            }
+            console.log('11')
+            try {
+                const response = await axios.post(`https://vs-code-message-feed.glitch.me/wakeUp`);
+                if (response.status == 200) {
+                    vscode.window.showInformationMessage('Server is working now')   
+                }
+            } catch (error : any) {
+                vscode.window.showErrorMessage('Failed to load text: ' + error.message);
+            }
+    });
+
     context.subscriptions.push(generateHTML);
     context.subscriptions.push(generatePHP);
     context.subscriptions.push(openPastebinCommand);
@@ -852,6 +870,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(sharkSpecial);
     context.subscriptions.push(fetchJSON);
     context.subscriptions.push(saveJSON);
+    context.subscriptions.push(wakeUp);
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")

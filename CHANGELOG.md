@@ -2,6 +2,16 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.10]
+
+### Changed
+
+ - Removed an emoji from changelog
+
+### Added
+
+ - A command to wake up the server
+
 ## [0.2.9]
 
 ### Added
@@ -23,7 +33,7 @@
 
 ### Added
 
- - Added shark's special 🤢
+ - Added shark's special
  -  >FOR YOUR OWN SAFETY, PLEASE DO NOT UNDER ANY INFLUENCE USE THIS COMMAND WHEN SOMEONE IS WATCHING YOUR COMPUTER, YOU WILL DEFENITELY PERISH, DIE OR EVEN WORSE
  - ***Don't say I didn't warn you***
 
