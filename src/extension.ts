@@ -749,18 +749,12 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
             const document = editor.document;
-            const id = await vscode.window.showInputBox({
-                prompt: "Podaj ID od 1 do 10",
-                validateInput: (input) => {
-                  const numericId = parseInt(input, 10);
-                  if (isNaN(numericId) || numericId < 1 || numericId > 10) {
-                    return "ID musi być liczbą od 1 do 10.";
-                  }
-                  return null; // Wartość jest poprawna
-                },
-                ignoreFocusOut: true
-              });
-            console.log('11')
+            const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], {
+                ignoreFocusOut: true,
+                title: "Choose and id from the list: ",
+                placeHolder: "ID"
+            })
+
             try {
                 const response = await axios.get(`https://vs-code-message-feed.glitch.me/getJSON`, {
                     headers: {
@@ -793,18 +787,11 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const saveJSON = vscode.commands.registerCommand('mate-ninja-s-tweaks.saveJSON', async () => {
-        // Zapytaj użytkownika o ID od 1 do 10
-    const id = await vscode.window.showInputBox({
-        prompt: "Podaj ID od 1 do 10",
-        validateInput: (input) => {
-          const numericId = parseInt(input, 10);
-          if (isNaN(numericId) || numericId < 1 || numericId > 10) {
-            return "ID musi być liczbą od 1 do 10.";
-          }
-          return null; // Wartość jest poprawna
-        },
-        ignoreFocusOut: true
-      });
+        const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], {
+            ignoreFocusOut: true,
+            title: "Choose and id from the list: ",
+            placeHolder: "ID"
+        })
 
         const config = vscode.workspace.getConfiguration("mateninjasTweaks");
         const pass = config.get<string>("serverPassword") || "";
@@ -814,7 +801,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
   
       if (!id) {
-        vscode.window.showErrorMessage("Nie podano ID.");
+        vscode.window.showErrorMessage("ID not chosen");
         return;
       }
   
@@ -839,6 +826,18 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    //FIXME:
+
+    async function keepWaking(){
+        const config = vscode.workspace.getConfiguration("mateninjasTweaks");
+        const response = await axios.post(`https://vs-code-message-feed.glitch.me/wakeUp`);
+            if (response.status == 200) {
+                if (config.get<boolean>("keepWaking")){
+                    setTimeout(keepWaking, 60000);
+                }
+            }
+    }
+
     const wakeUp = vscode.commands.registerCommand('mate-ninja-s-tweaks.wakey', async () => {
             const config = vscode.workspace.getConfiguration("mateninjasTweaks");
             const pass = config.get<string>("serverPassword") || "";
@@ -846,14 +845,12 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window.showErrorMessage('Server password not configured.');
                 return;
             }
-            console.log('11')
             try {
-                const response = await axios.post(`https://vs-code-message-feed.glitch.me/wakeUp`);
-                if (response.status == 200) {
-                    vscode.window.showInformationMessage('Server is working now')   
-                }
+                await keepWaking();
+                vscode.window.showInformationMessage('Server is working now');
+            if (config.get<boolean>("keepWaking")) vscode.window.showInformationMessage('Keep active mode ON');
             } catch (error : any) {
-                vscode.window.showErrorMessage('Failed to load text: ' + error.message);
+                vscode.window.showErrorMessage('Failed to wake up (!?!?!): ' + error.message);
             }
     });
 

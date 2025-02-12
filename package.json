@@ -2,7 +2,7 @@
   "name": "mate-ninja-s-html-structure-maker",
   "displayName": "mate_ninja's tweaks",
   "description": "An extension that adds a few useful commands to VS Code while in school",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "icon": "assets/icon/icon.png",
   "publisher": "mateninja",
   "engines": {
@@ -152,6 +152,11 @@
           "type": "boolean",
           "default": false,
           "description": "Turning this setting on will make generated structures shark-based (the style and script will be embeded in html/php file)"
+        },
+        "mateninjasTweaks.keepWaking": {
+          "type": "boolean",
+          "default": false,
+          "description": "If turned on, the client will hold the server active by sending information packet every minute, to keep it going"
         }
       }
     }
