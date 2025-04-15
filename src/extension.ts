@@ -749,7 +749,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
             const document = editor.document;
-            const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], {
+            const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"], {
                 ignoreFocusOut: true,
                 title: "Choose and id from the list: ",
                 placeHolder: "ID"
@@ -763,10 +763,8 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 });
 
-                console.log('1')
                 const text = response.data.text;
                 if (text) {
-                    console.log('2')
                     editor.edit(editBuilder => {
                         const firstLine = document.lineAt(0);
                         const lastLine = document.lineAt(document.lineCount - 1);
@@ -787,7 +785,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const saveJSON = vscode.commands.registerCommand('mate-ninja-s-tweaks.saveJSON', async () => {
-        const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], {
+        const id = await vscode.window.showQuickPick(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"], {
             ignoreFocusOut: true,
             title: "Choose and id from the list: ",
             placeHolder: "ID"
@@ -854,6 +852,43 @@ export function activate(context: vscode.ExtensionContext) {
             }
     });
 
+    const getComputerCraft = vscode.commands.registerCommand('mate-ninja-s-tweaks.fetchComputerMessage', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor){
+            const document = editor.document;
+            try {
+                const response = await axios.get('https://vs-code-message-feed.glitch.me/messagesComputer');
+                const messageData = response.data.message;
+
+                if (!messageData) {
+                    vscode.window.showErrorMessage('Brak wiadomości do pobrania');
+                    return;
+                }
+
+                // Utwórz zawartość pliku
+                const text = `// ComputerCraft file
+
+${messageData.message}
+`;
+
+                if (text) {
+                    editor.edit(editBuilder => {
+                        const firstLine = document.lineAt(0);
+                        const lastLine = document.lineAt(document.lineCount - 1);
+                        const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
+                        editBuilder.replace(textRange, text);
+                    });
+                    vscode.window.showInformationMessage('Downloaded file from computer craft');
+                } else {
+                    vscode.window.showInformationMessage('No files to download');
+                }
+
+            } catch (error) {
+                vscode.window.showErrorMessage(`Error while downloading: ${error}`);
+            }
+        }
+    });
+
     context.subscriptions.push(generateHTML);
     context.subscriptions.push(generatePHP);
     context.subscriptions.push(openPastebinCommand);
@@ -868,6 +903,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(fetchJSON);
     context.subscriptions.push(saveJSON);
     context.subscriptions.push(wakeUp);
+    context.subscriptions.push(getComputerCraft);
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")

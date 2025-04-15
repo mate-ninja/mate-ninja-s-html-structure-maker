@@ -2,7 +2,7 @@
   "name": "mate-ninja-s-html-structure-maker",
   "displayName": "mate_ninja's tweaks",
   "description": "An extension that adds a few useful commands to VS Code while in school",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "icon": "assets/icon/icon.png",
   "publisher": "mateninja",
   "engines": {
@@ -59,7 +59,7 @@
       },
       {
         "command": "mate-ninja-s-tweaks.renameVariables",
-        "title": "Fun tweaks: rename all varialbes in the file"
+        "title": "Fun tweaks: rename all variables in the file"
       },
       {
         "command": "mate-ninja-s-tweaks.sharkSpecial",
@@ -76,6 +76,10 @@
       {
         "command": "mate-ninja-s-tweaks.wakey",
         "title": "Tweaks: wakey wakey the server"
+      },
+      {
+        "command": "mate-ninja-s-tweaks.fetchComputerMessage",
+        "title": "Terefere Tweaks: Download from computer craft OS"
       }
     ],
     "menus": {

@@ -2,6 +2,22 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.12]
+
+## Changed
+
+ - Changed the limit of JSON message slots from 10 to 20 [+100%]
+
+## Fixed
+
+ - Added a missing changelog bulletpoint for update [0.2.11]
+
+## [0.2.11]
+
+ ## Changed
+
+ - Fixed major JSON message bugs, making the fuctions unusable
+
 ## [0.2.10]
 
 ### Changed
