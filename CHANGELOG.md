@@ -2,6 +2,23 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.14]
+
+## Fixed
+
+ - Added a missing changelog entry, very important
+
+## [0.2.13]
+
+## Added
+
+ - Added a command to pull from computercraft servers
+
+## Fixed
+
+ - Fixed a bug, where you could save JSON fine, but fetching it didn't work for ID's more than 20
+ - Fixed a spellig issue in one of the commands
+
 ## [0.2.12]
 
 ## Changed
