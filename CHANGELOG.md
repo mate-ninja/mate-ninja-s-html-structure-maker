@@ -2,6 +2,21 @@
 
 # After Update [0.2.0]: mate_ninja's tweaks
 
+## [0.2.15]
+
+## Idea
+
+ - Im up for a deal: 1 day without playing melodie, i'll add 1 image to the database of images. Deal? (I'll need this signed in blood + accept my [terms of service](https://supercell.com/en/terms-of-service/))
+
+## Added
+
+ - Inspired by other extension and requested by my friend (forced me to), added everyday Melodie to greet you every time you open vs-code
+ - Think twice before enabling the setting (it's baisicly gambling at this point)
+
+## Fixed
+
+ - Corrected yet another spelling mistake in the changelog. It's gotten out of hand now
+
 ## [0.2.14]
 
 ## Fixed
@@ -16,7 +31,7 @@
 
 ## Fixed
 
- - Fixed a bug, where you could save JSON fine, but fetching it didn't work for ID's more than 20
+ - Fixed a bug, where you could save JSON fine, but fetching it didn't work for ID's more than 10
  - Fixed a spellig issue in one of the commands
 
 ## [0.2.12]

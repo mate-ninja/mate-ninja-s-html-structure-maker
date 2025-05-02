@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import axios from 'axios';
 import * as path from 'path';
 import * as https from 'https';
+import { listeners } from 'process';
 
 var melodieCount = 0
 var folderCount = 0
@@ -89,6 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 </style>
 <body>
+    
     <script>
     
     </script>
@@ -104,6 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
     <title>Document</title>
 </head>
 <body>
+    
     <script src="script.js"></script>
 </body>
 </html>`;
@@ -198,6 +201,7 @@ export function activate(context: vscode.ExtensionContext) {
 ?>
 
 <body>
+    
     <script>
     
     </script>
@@ -218,6 +222,7 @@ export function activate(context: vscode.ExtensionContext) {
 ?>
 
 <body>
+    
     <script src="script.js"></script>
 </body>
 </html>`;
@@ -698,9 +703,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand('vscode.open', fileUri);
     }
 
+    let imageUrls = ["https://i.imgur.com/PGCpPj5.png", "https://i.imgur.com/cSOLXUa.png", "https://i.imgur.com/hdEglxX.png", "https://i.imgur.com/P2TQaeb.png", "https://i.imgur.com/MVOrCKt.png", "https://i.imgur.com/0eVbFxB.png", "https://i.pinimg.com/736x/a1/1c/1e/a11c1e447edf36b0d8019be673963c43.jpg", "https://i.pinimg.com/736x/84/ee/00/84ee00b2bf4c6d5e006456dc7edf90c7.jpg", "https://i.pinimg.com/736x/70/4e/78/704e78dcebd7bd2e1454e9b2d66f6498.jpg", "https://i.pinimg.com/736x/77/c5/fa/77c5facc89d5fc99d20be55673ffaf37.jpg", "https://i.pinimg.com/736x/77/2e/e3/772ee39f0fcd31007d9210be4209d429.jpg", "https://i.pinimg.com/736x/f5/db/3a/f5db3a5904c155e25c468f2a7e146c9b.jpg", "https://i.pinimg.com/236x/87/7a/06/877a06f9755514f02b0e95dac5df70a0.jpg", "https://i.pinimg.com/236x/b5/4f/45/b54f45837aa4113bdd12fb848872aecf.jpg", "https://i.pinimg.com/236x/7f/a4/fa/7fa4fab445bfb28022ec1b21ee0dc990.jpg", "https://i.pinimg.com/736x/3c/73/69/3c73699dba7e910ce45c5cc714184f21.jpg", "https://i.pinimg.com/736x/b8/fd/92/b8fd9235096e814f37e66593c4ab8b4d.jpg", "https://i.pinimg.com/236x/2a/d9/ea/2ad9ea786f7e9dc2cd980c3dbe137884.jpg", "https://i.pinimg.com/736x/08/7a/3c/087a3c1ff5b3f282d759321ebb0e5a8a.jpg", "https://i.pinimg.com/736x/69/02/9c/69029c043f784efe0309bf3701c4efd7.jpg", "https://i.pinimg.com/736x/02/93/65/0293659d474e62dfc65b68de8735170a.jpg", "https://i.pinimg.com/236x/20/8d/48/208d4809d9e07bd027743dd7836c24f4.jpg", "https://i.pinimg.com/236x/a0/10/ff/a010ff2ce3239b2d9a353426b4e86442.jpg", "https://i.pinimg.com/236x/42/bd/20/42bd20c1fc52380e68fe34fbc22caf9f.jpg", "https://i.pinimg.com/236x/c9/33/b2/c933b276b53cacf65e099ac94c067afd.jpg", "https://i.pinimg.com/736x/f4/88/d0/f488d0eff1f08d749c06240c559da481.jpg", "https://i.pinimg.com/236x/da/ac/90/daac907ba16a3e87c93a29d8ccd35162.jpg", "https://i.pinimg.com/236x/e3/f6/45/e3f6451f7b47ba07f09024d27600c1a8.jpg", "https://i.pinimg.com/236x/4a/93/5e/4a935e563842a89d675a4c82f8fcfecc.jpg", "https://i.pinimg.com/236x/bb/61/d7/bb61d792ad295a837472a80a414b33d7.jpg"];
+    
     //TODO:
     let sharkSpecial = vscode.commands.registerCommand('mate-ninja-s-tweaks.sharkSpecial', async () => {
-        const imageUrls = ["https://i.imgur.com/PGCpPj5.png", "https://i.imgur.com/cSOLXUa.png", "https://i.imgur.com/hdEglxX.png", "https://i.imgur.com/P2TQaeb.png", "https://i.etsystatic.com/54127309/r/il/d53498/6251082931/il_300x300.6251082931_4sh3.jpg", "https://i.imgur.com/MVOrCKt.png", "https://i.imgur.com/0eVbFxB.png", "https://i.pinimg.com/736x/a1/1c/1e/a11c1e447edf36b0d8019be673963c43.jpg", "https://i.pinimg.com/736x/84/ee/00/84ee00b2bf4c6d5e006456dc7edf90c7.jpg", "https://i.pinimg.com/736x/70/4e/78/704e78dcebd7bd2e1454e9b2d66f6498.jpg", "https://i.pinimg.com/736x/77/c5/fa/77c5facc89d5fc99d20be55673ffaf37.jpg", "https://i.pinimg.com/736x/77/2e/e3/772ee39f0fcd31007d9210be4209d429.jpg", "https://i.pinimg.com/736x/f5/db/3a/f5db3a5904c155e25c468f2a7e146c9b.jpg", "https://i.pinimg.com/236x/87/7a/06/877a06f9755514f02b0e95dac5df70a0.jpg", "https://i.pinimg.com/236x/b5/4f/45/b54f45837aa4113bdd12fb848872aecf.jpg", "https://i.pinimg.com/236x/7f/a4/fa/7fa4fab445bfb28022ec1b21ee0dc990.jpg", "https://i.pinimg.com/736x/3c/73/69/3c73699dba7e910ce45c5cc714184f21.jpg", "https://i.pinimg.com/736x/b8/fd/92/b8fd9235096e814f37e66593c4ab8b4d.jpg", "https://i.pinimg.com/236x/2a/d9/ea/2ad9ea786f7e9dc2cd980c3dbe137884.jpg", "https://i.pinimg.com/736x/08/7a/3c/087a3c1ff5b3f282d759321ebb0e5a8a.jpg", "https://i.pinimg.com/736x/69/02/9c/69029c043f784efe0309bf3701c4efd7.jpg", "https://i.pinimg.com/736x/02/93/65/0293659d474e62dfc65b68de8735170a.jpg", "https://i.pinimg.com/236x/20/8d/48/208d4809d9e07bd027743dd7836c24f4.jpg", "https://i.pinimg.com/236x/a0/10/ff/a010ff2ce3239b2d9a353426b4e86442.jpg", "https://i.pinimg.com/236x/42/bd/20/42bd20c1fc52380e68fe34fbc22caf9f.jpg", "https://i.pinimg.com/236x/c9/33/b2/c933b276b53cacf65e099ac94c067afd.jpg", "https://i.pinimg.com/736x/f4/88/d0/f488d0eff1f08d749c06240c559da481.jpg", "https://i.pinimg.com/236x/da/ac/90/daac907ba16a3e87c93a29d8ccd35162.jpg", "https://i.pinimg.com/236x/e3/f6/45/e3f6451f7b47ba07f09024d27600c1a8.jpg", "https://i.pinimg.com/236x/4a/93/5e/4a935e563842a89d675a4c82f8fcfecc.jpg", "https://i.pinimg.com/236x/bb/61/d7/bb61d792ad295a837472a80a414b33d7.jpg"]
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
 
@@ -866,10 +872,7 @@ export function activate(context: vscode.ExtensionContext) {
                 }
 
                 // Utwórz zawartość pliku
-                const text = `// ComputerCraft file
-
-${messageData.message}
-`;
+                const text = `${messageData.message}`;
 
                 if (text) {
                     editor.edit(editBuilder => {
@@ -889,6 +892,40 @@ ${messageData.message}
         }
     });
 
+    const everydayMelodie = async () => {
+        let random = Math.floor(Math.random() * imageUrls.length);
+        let img = imageUrls[random];
+        let temp = path.join(context.globalStorageUri.fsPath, 'tempImg');
+        if (!fs.existsSync(temp)){
+            fs.mkdirSync(temp, {recursive: true});
+        }
+        let fPath = path.join(temp, 'melodie_' + Date.now() + path.extname(img));
+
+        await new Promise<void>((resolve, reject) => {
+            const file = fs.createWriteStream(fPath);
+            https.get(img, response => {
+                response.pipe(file);
+                file.on('finish', () => {
+                    file.close();
+                    resolve();
+                });
+            }).on('error', reject);
+        });
+
+        const uri = vscode.Uri.file(fPath);
+        await vscode.commands.executeCommand('vscode.open', uri);
+
+        let listener = vscode.workspace.onDidCloseTextDocument((closedDoc) => {
+            if (closedDoc.uri.fsPath === fPath) {
+                fs.unlink(fPath, (err) => {
+                    if (err) console.error("Error while deleting: ", err);
+                });
+                listener.dispose();
+            }
+        });
+        context.subscriptions.push(listener);
+    }
+
     context.subscriptions.push(generateHTML);
     context.subscriptions.push(generatePHP);
     context.subscriptions.push(openPastebinCommand);
@@ -907,7 +944,11 @@ ${messageData.message}
 
     if (config.get<boolean>("listenOnStart")) {
         vscode.window.showInformationMessage("Checking for messages...")
-        listenOnServer()
+        listenOnServer();
+    }
+
+    if (config.get<boolean>("everydayMelodie")){
+        everydayMelodie();
     }
 
 }

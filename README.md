@@ -40,3 +40,9 @@ You have a little command to rename all of the variables in a .js file to an ico
 `mateninjasTweaks.htmlLang` - lets you decide if you are from Poland or not
 
 `mateninjasTweaks.sharkBased` - decide if you want your styles and script to be embeded in html/php file
+
+# Is there something else?
+
+## Yes
+
+I'm too lazy to do this in both the readme and changelog, but I guess if you really want to the changelog will **ALLWAYS** be up to date, so look in there
